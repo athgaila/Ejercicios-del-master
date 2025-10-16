@@ -1,11 +1,11 @@
 
 -- 2-. Muestra los nombres de todas las películas con una clasificación por edades de‘Rʼ */
-SELECT title , rating 
-FROM film 
-ORDER BY rating ;
+SELECT title
+FROM film
+WHERE rating = 'R'';
 
 -- 3-. Encuentra los nombres de los actores que tengan un “actor_idˮ entre 30 y 40.*/
-SELECT actor_id , CONCAT("first_name", ' ', last_name  )
+SELECT actor_id , concat(first_name, ' ', last_name)
 FROM actor
 WHERE actor_id BETWEEN 30 and 40;
 
@@ -17,7 +17,7 @@ FROM film f
 JOIN language l
   ON f.language_id = l.language_id
 WHERE f.language_id = f.original_language_id;
--- No puede averiguarse, porque el idioma original siempre es NULL, no se vuelcan resultados
+-- No puede averiguarse, porque el idioma original siempre es NULL, no se vuelcan resultados por las características de los datos.
 
 -- 5-. Ordena las películas por duración de forma ascendente.
 SELECT title , length 
@@ -41,7 +41,7 @@ FROM film
 WHERE rating = 'PG-13' OR length >180;
 
 -- 9-. Encuentra la variabilidad de lo que costaría reemplazar las películas.
-SELECT VARIANCE (replacement_cost) 
+SELECT ROUND (VARIANCE (replacement_cost))
 FROM film;
 
 -- 10-. Encuentra la mayor y menor duración de una película de nuestra BBDD.
@@ -54,7 +54,7 @@ ORDER BY length DESC ;
 -- 11-. Encuentra lo que costó el antepenúltimo alquiler ordenado por día.
 SELECT amount, payment_date
 FROM payment
-ORDER BY payment_date DESC 
+ORDER BY payment_date ASC 
 LIMIT 1 OFFSET 2;
 
 -- 12-. Encuentra el título de las películas en la tabla “filmˮ que no sean ni ‘NC- 17ʼ ni ‘Gʼ en cuanto a su clasificación.
@@ -73,7 +73,7 @@ FROM film
 WHERE length > 180;
 
 -- 15-. ¿Cuánto dinero ha generado en total la empresa?
-SELECT SUM (amount) 
+SELECT SUM(amount) 
 FROM payment;
 
 -- 16-. Muestra los 10 clientes con mayor valor de id.
@@ -163,15 +163,17 @@ GROUP BY actor_id
 HAVING COUNT(film_id) > 40;
 
 -- 29-. Obtener todas las películas y, si están disponibles en el inventario, mostrar la cantidad disponible.
-SELECT f.film_id,
-       f.title,
-       COUNT(i.inventory_id) - COUNT(r.rental_id) AS cantidad_disponible
+SELECT 
+    f.film_id,
+    f.title,
+    COUNT(i.inventory_id) AS total_copias,
+    COUNT(i.inventory_id) - COUNT(r.rental_id) AS disponibles
 FROM film f
 LEFT JOIN inventory i 
-       ON f.film_id = i.film_id
+    ON f.film_id = i.film_id
 LEFT JOIN rental r 
-       ON i.inventory_id = r.inventory_id 
-       AND r.return_date IS NULL  -- aún alquilada
+    ON i.inventory_id = r.inventory_id
+    AND r.return_date IS NULL  -- solo cuenta las copias que están actualmente alquiladas
 GROUP BY f.film_id, f.title
 ORDER BY f.title;
 
@@ -262,7 +264,7 @@ SELECT first_name as "Nombre", last_name as "Apellido"
 FROM actor;
 
 -- 37-. Encuentra el ID del actor más bajo y más alto en la tabla actor.
-SELECT MAX(actor_id) , MIN(actor_id)
+SELECT MIN(actor_id) , MAX(actor_id)
 FROM actor;
 
 -- 38-. Cuenta cuántos actores hay en la tabla “actorˮ.
@@ -343,28 +345,24 @@ WHERE fa.film_id IS NULL;
 
 -- 47-. Selecciona el nombre de los actores y la cantidad de películas en las que han participado.
 SELECT 
-    a.first_name || ' ' || a.last_name AS actor_name,
-    COUNT(fa.film_id) AS movie_count
-FROM 
-    actor a
-JOIN 
-    film_actor fa ON a.actor_id = fa.actor_id
-GROUP BY 
-    a.actor_id, a.first_name, a.last_name
-ORDER BY 
-    movie_count DESC;
+    CONCAT(a.first_name, ' ', a.last_name) AS actor_name,
+    COUNT(fa.film_id) AS total_peliculas
+FROM actor a
+JOIN film_actor fa ON a.actor_id = fa.actor_id
+GROUP BY a.actor_id, a.first_name, a.last_name
+ORDER BY total_peliculas DESC;
 
 -- 48-. Crea una vista llamada “actor_num_peliculasˮ que muestre los nombres de los actores y el número de películas en las que han participado.
-CREATE VIEW actor_num_peliculas AS
+CREATE VIEW actor_numero_peliculas AS
 SELECT 
     a.actor_id,
     a.first_name || ' ' || a.last_name AS nombre_actor,
-    COUNT(fa.film_id) AS num_peliculas
+    COUNT(fa.film_id) AS numero_peliculas
 FROM actor a
 JOIN film_actor fa ON a.actor_id = fa.actor_id
 JOIN film f ON fa.film_id = f.film_id
 GROUP BY a.actor_id, a.first_name, a.last_name
-ORDER BY num_peliculas DESC;
+ORDER BY numero_peliculas DESC;
 
 -- 49-. Calcula el número total de alquileres realizados por cada cliente.
 SELECT 
@@ -521,10 +519,14 @@ ORDER BY numero_peliculas DESC;
 
 -- 63-. Obtén todas las combinaciones posibles de trabajadores con las tiendas que tenemos.
 SELECT 
-    staff,
-    store
-FROM staff
-CROSS JOIN store;
+    s.staff_id,
+    CONCAT(s.first_name, ' ', s.last_name) AS staff_name,
+    st.store_id,
+    st.manager_staff_id,
+    st.address_id
+FROM staff s
+CROSS JOIN store st
+ORDER BY s.staff_id, st.store_id;
 
 -- 64-. Encuentra la cantidad total de películas alquiladas por cada cliente y muestra el ID del cliente, su nombre y apellido junto con la cantidad de películas alquiladas.
 SELECT 
