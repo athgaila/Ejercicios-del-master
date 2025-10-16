@@ -14,7 +14,7 @@ Además, he intentado seguir buenas praxis como poner en mayúsculas las keyword
 
 A lo largo de los diferentes ejercicios he encontrado diversos escollos, algunos de ellos me han hecho tener que reformular varias veces hasta conseguir un resultado correcto. Hay ejercicios muy simples que prácticamente no requieren keywords y que se centran en una sola tabla, otros que implican varias tablas a la vez, incluyendo cláusulas como JOIN con WHERE, JOIN con GROUP BY con HAVING y ORDER BY, o varios JOIN. 
 
-Sí que me gustaría hacer una sugerencia y es que los ejercicios se pusieran ver al principio del módulo para ir haciéndolos poco a poco según vas aprendiendo cómo se ejecutan, y he echado de menor que haya ejercicios prácticos que hacer (al menos que se sugiera hacerlos), lo cual creo que daría soltura para tener menos problemas al llegar al momento de hacer el trabajo.
+Sí que me gustaría hacer una sugerencia y es que los ejercicios se pusieran ver al principio del módulo para ir haciéndolos poco a poco según vas aprendiendo cómo se ejecutan, y he echado de menos que haya ejercicios prácticos que hacer (al menos que se sugiera hacerlos), lo cual creo que daría soltura para tener menos problemas al llegar al momento de hacer el trabajo.
 
 
 
