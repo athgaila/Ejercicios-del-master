@@ -39,11 +39,8 @@ print(contar_frecuencias(cadena))
 
 #2-. Dada una lista de números, obtén una nueva lista con el doble de cada valor. Usa la función map()
 # Creamos la función map incluyendo una lambda para duplicar la lista de números
-nueva_lista = list(map(lambda x: x * 2, lista_numeros))
-print(nueva_lista)
-
-#Ejemplo
 lista_numeros = [1, 2, 3, 4, 5]
+nueva_lista = list(map(lambda x: x * 2, lista_numeros))
 print(nueva_lista)
 [2, 4, 6, 8, 10]    
 
@@ -251,6 +248,9 @@ print (palabras_mas_largas(texto, n))
 
 #17-. Crea una función que tome una lista de dígitos y devuelva el número correspondiente. 
 # Por ejemplo, [5,7,2] corresponde al número quinientos setenta y dos (572). Usa la función reduce()
+
+from functools import reduce
+
 def lista_a_numero(digitos):
     return reduce(lambda x, y: x * 10 + y, digitos)
 #Ejemplo
@@ -312,7 +312,7 @@ print (producto_final)
 
 
 #23-. Concatena una lista de palabras. Usa la función reduce() .
-lista_palabras = ["polvo " "serán " ", " "mas " "polvo " "enamorado"]
+lista_palabras = ["polvo", "serán,","mas","polvo","enamorado"]
 concatenacion_palabras = reduce (lambda x, y: x + " " + y, lista_palabras)
 print (concatenacion_palabras)
 #polvo serán , mas polvo enamorado
@@ -543,33 +543,42 @@ class UsuarioBanco:
         self.cuenta_corriente = cuenta_corriente
 
     def retirar_dinero(self, cantidad):
-        if cantidad <= 0:
-            raise ValueError("La cantidad a retirar debe ser positiva.")
-        if cantidad > self.saldo:
-            raise ValueError(f"{self.nombre} no tiene suficiente saldo para retirar {cantidad}.")
-        self.saldo -= cantidad
-        print(f"{self.nombre} ha retirado {cantidad} unidades. Saldo actual: {self.saldo}")
+        try:
+            if cantidad <= 0:
+                raise ValueError("La cantidad a retirar debe ser positiva.")
+            if cantidad > self.saldo:
+                raise ValueError(f"{self.nombre} no tiene suficiente saldo para retirar {cantidad}.")
+            self.saldo -= cantidad
+            print(f"{self.nombre} ha retirado {cantidad} unidades. Saldo actual: {self.saldo}")
+        except ValueError as e:
+            print(e)
 
     def transferir_dinero(self, otro_usuario, cantidad):
-        if not self.cuenta_corriente or not otro_usuario.cuenta_corriente:
-            raise ValueError("Ambos usuarios deben tener cuenta corriente para transferir dinero.")
-        if cantidad <= 0:
-            raise ValueError("La cantidad a transferir debe ser positiva.")
-        if cantidad > self.saldo:
-            raise ValueError(f"{self.nombre} no tiene suficiente saldo para transferir {cantidad}.")
-        self.saldo -= cantidad
-        otro_usuario.saldo += cantidad
-        print(f"{self.nombre} ha transferido {cantidad} unidades a {otro_usuario.nombre}.")
-        print(f"Saldo actual de {self.nombre}: {self.saldo}")
-        print(f"Saldo actual de {otro_usuario.nombre}: {otro_usuario.saldo}")
+        try:
+            if not self.cuenta_corriente or not otro_usuario.cuenta_corriente:
+                raise ValueError("Ambos usuarios deben tener cuenta corriente para transferir dinero.")
+            if cantidad <= 0:
+                raise ValueError("La cantidad a transferir debe ser positiva.")
+            if cantidad > self.saldo:
+                raise ValueError(f"{self.nombre} no tiene suficiente saldo para transferir {cantidad}.")
+            self.saldo -= cantidad
+            otro_usuario.saldo += cantidad
+            print(f"{self.nombre} ha transferido {cantidad} unidades a {otro_usuario.nombre}.")
+            print(f"Saldo actual de {self.nombre}: {self.saldo}")
+            print(f"Saldo actual de {otro_usuario.nombre}: {otro_usuario.saldo}")
+        except ValueError as e:
+            print(e)
 
     def agregar_dinero(self, cantidad):
-        if cantidad <= 0:
-            raise ValueError("La cantidad a agregar debe ser positiva.")
-        self.saldo += cantidad
-        print(f"{self.nombre} ha agregado {cantidad} unidades. Saldo actual: {self.saldo}")
+        try:
+            if cantidad <= 0:
+                raise ValueError("La cantidad a agregar debe ser positiva.")
+            self.saldo += cantidad
+            print(f"{self.nombre} ha agregado {cantidad} unidades. Saldo actual: {self.saldo}")
+        except ValueError as e:
+            print(e)
 
-    #Ejerrcicios:
+    #Ejercicios:
 if __name__ == "__main__":
     # 1. Crear usuarios
     alicia = UsuarioBanco("Alicia", 100, True)
@@ -581,7 +590,7 @@ if __name__ == "__main__":
 
     # 3. Transferir 80 unidades de Bob a Alicia
     bob.transferir_dinero(alicia, 80)
-    ValueError: Bob no tiene suficiente saldo para transferir 80.
+    #ValueError: Bob no tiene suficiente saldo para transferir 80.
 
     # 4. Retirar 50 unidades de Alicia
     alicia.retirar_dinero(50)
@@ -599,16 +608,16 @@ if __name__ == "__main__":
 #Caso de uso: Comprueba el funcionamiento completo de la función procesar_texto
 
 def contar_palabras(frase):
-    #Cuenta cuántas veces aparece cada palabra en la farse.
-    palabras = texto.split()
+    #Cuenta cuántas veces aparece cada palabra en la frase.
+    palabras = frase.split()
     contador = {}
-    for palabra in frase:
+    for palabra in palabras:
         palabra_lower = palabra.lower()
         contador[palabra_lower] = contador.get(palabra_lower, 0) + 1
     return contador
 #Ejemplo:
-frase = "es hielo abrasador, es fuego helado, es herida que duele y no se siente"
-print(contar_palabras(frase))
+lema = "es hielo abrasador, es fuego helado, es herida que duele y no se siente"
+print(contar_palabras(lema))
 {'es': 3, 'hielo': 1, 'abrasador,': 1, 'fuego': 1, 'helado,': 1, 'herida': 1, 'que': 1, 'duele': 1, 'y': 1, 'no': 1, 'se': 1, 'siente': 1}
 
 
@@ -694,7 +703,7 @@ calificacion()
 
 #40-. Escribe una función que tome dos parámetros: figura (una cadena que puede ser "rectangulo" , "circulo" o "triangulo")
 #y datos (una tupla con los datos necesarios para calcular el área de la figura).
-def calcular_area_triángulo
+
 import math  # para usar pi en el cálculo del círculo
 
 def calcular_area(figura, datos):
